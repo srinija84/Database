@@ -1,0 +1,158 @@
+/* 
+ * CPSC-350-11-Database Design-2016 BY PROF. LEE
+ * GROUP - 17 - PROJECT 1 - PHASE 3
+ * SRINIJA KATIKINENI
+ */
+
+/*
+  * NAME: GETCUSTOMERNAME
+  * @DESCRIPTION: RETURN COMPANY NAME FROM CUSTOMER TABLE.
+ */
+  CREATE OR REPLACE FUNCTION GETCUSTOMERNAME(ACC_NO IN NUMBER)
+     RETURN VARCHAR2 IS
+         CUSTOMERNAME VARCHAR2(20)  := NULL;
+        BEGIN
+        SELECT CUST_NAME INTO CUSTOMERNAME FROM CUSTOMER WHERE CUST_ACC_NO=ACC_NO;
+        RETURN (CUSTOMERNAME);
+         END;
+    /
+ --------------------------------------------------------------------------------------
+/*
+  * NAME: GETDAY
+  * @DESCRIPTION: RETURN DAY OF FLIGHT JOURNEY  FROM  FLIGHT TABLE.
+  */
+CREATE OR REPLACE FUNCTION GETDAY (FLGTNO in NUMBER)
+    RETURN VARCHAR2 IS
+        DAY VARCHAR2(50) := NULL;
+    BEGIN
+       SELECT FLGT_AVAIL_DAY INTO DAY
+       FROM FLIGHT WHERE FLGT_NO = FLGTNO;
+       RETURN DAY;
+    END;
+   /
+--------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION GETDEPARPORT (FLGTNO in NUMBER)
+    RETURN VARCHAR2 IS
+       DEPARPORT VARCHAR2(50) := NULL;
+    BEGIN
+       SELECT FLGT_STOP_DEP_ARPT_CODE INTO DEPARPORT
+       FROM FLIGHT_STOPS WHERE FLGT_NO = FLGTNO;
+       RETURN DEPARPORT;
+    END;
+    /
+
+ --------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+ /*
+  * NAME: GETEMPLOYEENAME
+  * @DESCRIPTION: RETURN EMPLOYEE NAME FROM EMPLOYEE TABLE.
+  */
+  CREATE or REPLACE FUNCTION GETEMPLOYEENAME (FNO  in NUMBER)
+       RETURN VARCHAR2 IS
+           EMPLOYEENAME  VARCHAR2(50) := NULL;
+        BEGIN
+           SELECT EMP_NAME INTO EMPLOYEENAME
+           FROM EMPLOYEE WHERE FLGT_NO=FNO;
+          RETURN (EMPLOYEENAME);
+        END;
+    /
+
+ --------------------------------------------------------------------------------------
+
+/*
+  * NAME: GETFARE
+  * @DESCRIPTION: RETURN FLIGHT FARE FROM FLIGHT TABLE.
+  */
+   CREATE OR REPLACE FUNCTION GETFARE (FLGTNO in NUMBER)
+    RETURN VARCHAR2 IS
+        FARE FLOAT(50) := NULL;
+    BEGIN
+       SELECT FLGT_FARE INTO FARE
+       FROM FLIGHT WHERE FLGT_NO = FLGTNO;
+       RETURN FARE;
+    END;
+   /
+--------------------------------------------------------------------------------------
+
+/* SQL QUERY 1: GET THE LIST OF FLIGHT  */
+SELECT RESV_NO "RESERVATION NO",
+     GETCUSTOMERNAME(5) "CUSTOMER NAME",
+     SEAT_NO "SEAT NO",
+     GETDEPARPORT(122) "AIRPORT",
+     DATE_OF_TRAVEL "DATE",
+     GETDAY(122) "DAY"
+FROM SEAT_RESERVATION;
+--------------------------------------------------------------------------------------
+
+/* SQL QUERY 2: GET THE LIST OF FLIGHT  */
+/* NOTE: First execute the required functions: GETFARE and GETEMPLOYEENAME from dbDDL.sql */
+SELECT FLGT_NO "FLIGHT NO",
+       FLGT_STOP_ID "STOP_ID",
+       GETFARE(122) "FARE",
+       FLGT_STOP_SHD_DEP_TIME "TIME",
+       GETEMPLOYEENAME(122) "EMPLOYEE" 
+FROM FLIGHT_STOPS;
+--------------------------------------------------------------------------------------       
+/* SQL QUERY 3: GET THE LIST OF CUSTOMER NAME AND SEAT NUMBER USING JOIN OPERATION */
+
+SELECT  C.CUST_NAME,
+        S.SEAT_NO 
+        FROM CUSTOMER C,SEAT_RESERVATION S;
+--------------------------------------------------------------------------------------
+
+/* SQL QUERY 4: GET THE LIST OF SEAT_RESERVATION AND CUSTOMER USING NATURAL JOIN OPERATION  */
+
+SELECT * FROM 
+       CUSTOMER C JOIN SEAT_RESERVATION S ON 
+                     (C.CUST_ACC_NO = S.CUST_ACCNO);
+--------------------------------------------------------------------------------------
+
+ /* SQL QUERY 5: GET THE LIST OF EMPLOYEE AND RESVATION NUMBER USING NON-EQUI JOIN OPERATION */
+
+SELECT E.EMP_NAME,
+       E.EMP_ALLOTED_FOR,
+       S.RESV_NO FROM EMPLOYEE E JOIN SEAT_RESERVATION S ON(E.EMP_ID=S.EMP_ID);
+--------------------------------------------------------------------------------------
+
+ /* SQL QUERY 6: GET THE LIST OF AIRPORT NAME AND FLIGHT USING JOIN OPERATION */
+
+SELECT A.ARPORT_NAME,
+       F.FLGT_STOP_DEP_ARPT_CODE 
+       FROM AIRPORT  A  JOIN  FLIGHT_STOPS F ON (A.ARPORT_CODE = F.FLGT_STOP_DEP_ARPT_CODE);
+--------------------------------------------------------------------------------------
+
+/* SQL QUERY 7: DELETE THE CUSTOMER INFORMATION. */
+
+DELETE FROM CUSTOMER WHERE CUST_ACC_NO = '6';
+--------------------------------------------------------------------------------------
+
+/* SQL QUERY 8: UPDATE THE FLIGHT FARE. */
+
+UPDATE FLIGHT SET  FLGT_FARE= '500' WHERE FLGT_NO = 133;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
